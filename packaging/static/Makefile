@@ -18,7 +18,7 @@ clean: ## remove build artifacts
 	$(RM) -r build
 
 .PHONY: static
-static: static-linux cross-mac cross-win cross-arm ## create all static packages
+static: static-linux cross-mac cross-win cross-arm cross-s390x ## create all static packages
 
 .PHONY: static-linux
 static-linux:
@@ -55,3 +55,10 @@ cross-arm: ## create tgz with linux armhf client only
 	cd $(APP_DIR) && go get && env GOOS=linux GOARCH=arm64 go build -o cri-dockerd-arm64
 	mv $(APP_DIR)/cri-dockerd-arm64 build/arm/cri-dockerd/cri-dockerd
 	tar -C build/arm -c -z -f build/arm/cri-dockerd-$(STATIC_VERSION)-linux-arm64.tgz cri-dockerd
+
+.PHONY: cross-s390x
+cross-s390x: ## create tgz with linux s390x client only
+	mkdir -p build/s390x/cri-dockerd
+	cd $(APP_DIR) && go get && env GOOS=linux GOARCH=s390x go build -o cri-dockerd-s390x
+	mv $(APP_DIR)/cri-dockerd-s390x build/s390x/cri-dockerd/cri-dockerd
+	tar -C build/s390x -c -z -f build/s390x/cri-dockerd-$(STATIC_VERSION)-linux-s390x.tgz cri-dockerd
